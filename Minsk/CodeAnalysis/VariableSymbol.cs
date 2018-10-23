@@ -2,7 +2,7 @@ using System;
 
 namespace Minsk.CodeAnalysis
 {
-    public sealed class VariableSymbol
+    public struct VariableSymbol
     {
         internal VariableSymbol(string name, Type type)
         {

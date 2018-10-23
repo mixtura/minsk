@@ -54,7 +54,7 @@ namespace Minsk.CodeAnalysis.Binding
             var name = syntax.IdentifierToken.Text;
             var variable = _variables.Keys.FirstOrDefault(v => v.Name == name);
 
-            if (variable == null)
+            if (variable.Equals(default(VariableSymbol)))
             {
                 _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
                 return new BoundLiteralExpression(0);
@@ -69,11 +69,15 @@ namespace Minsk.CodeAnalysis.Binding
             var boundExpression = BindExpression(syntax.Expression);
 
             var existingVariable = _variables.Keys.FirstOrDefault(v => v.Name == name);
-            if (existingVariable != null)
+            var existingVariableValue = (object)null;
+
+            if (!existingVariable.Equals(default(VariableSymbol))) {
+                existingVariableValue = _variables[existingVariable];
                 _variables.Remove(existingVariable);
+            }
 
             var variable = new VariableSymbol(name, boundExpression.Type);
-            _variables[variable] = null;
+            _variables[variable] = existingVariableValue;
 
             return new BoundAssignmentExpression(variable, boundExpression);
         }
